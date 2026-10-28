@@ -1,10 +1,9 @@
-import { ButtonDemo } from '../components/button/Button.demo'
-import { CardDemo } from '../components/card/Card.demo'
 import { BloomButtonDemo } from '../components/bloom-button/BloomButton.demo'
 import { PillBloomButtonDemo } from '../components/pill-bloom-button/PillBloomButton.demo'
 import { WhiteBloomButtonDemo } from '../components/white-bloom-button/WhiteBloomButton.demo'
 import { DotWaveBackgroundDemo } from '../components/dot-wave-background/DotWaveBackground.demo'
 import { ChromaticWaveButtonDemo } from '../components/chromatic-wave-button/ChromaticWaveButton.demo'
+import { WaveDistortionDemo } from '../components/wave-distortion/WaveDistortion.demo'
 
 // Register new demos here to add them to the gallery.
 export const demos = [
@@ -22,6 +21,14 @@ export const demos = [
     description: 'A red wave crest travels outward from White Bloom, with yellow ahead and blue trailing through the dots.',
     source: 'src/components/chromatic-wave-button/ChromaticWaveButton.tsx',
     component: ChromaticWaveButtonDemo,
+    immersive: true,
+  },
+  {
+    id: 'wave-distortion',
+    name: 'Wave distortion',
+    description: 'A passing wave bends and colors text and lines in sync with the dots. Toggle distortion and color independently.',
+    source: 'src/components/wave-distortion/WaveDistortion.tsx',
+    component: WaveDistortionDemo,
     immersive: true,
   },
   {
@@ -47,21 +54,5 @@ export const demos = [
     source: 'src/components/dot-wave-background/DotWaveBackground.tsx',
     component: DotWaveBackgroundDemo,
     immersive: true,
-  },
-  {
-    id: 'button',
-    name: 'Button',
-    description: 'A small starting point for actions. Explore variants, sizes, and interaction states.',
-    source: 'src/components/button/Button.tsx',
-    component: ButtonDemo,
-    immersive: false,
-  },
-  {
-    id: 'card',
-    name: 'Card',
-    description: 'A flexible container for content, with room for a description and custom actions.',
-    source: 'src/components/card/Card.tsx',
-    component: CardDemo,
-    immersive: false,
   },
 ]

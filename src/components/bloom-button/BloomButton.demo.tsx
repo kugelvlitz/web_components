@@ -10,7 +10,7 @@ export function BloomButtonDemo() {
     <div className="flex min-h-[440px] flex-col items-center justify-center gap-16 px-6 py-16 text-center sm:min-h-[500px]">
       <p className="font-mono text-[10px] tracking-[0.25em] text-neutral-600 uppercase">A little light in the dark</p>
 
-      <BloomButton data-wave-trigger key={reset} speed={speed} onClick={() => setActivated(true)}>
+      <BloomButton key={reset} speed={speed} onClick={() => setActivated(true)}>
         Give it a spin
       </BloomButton>
 

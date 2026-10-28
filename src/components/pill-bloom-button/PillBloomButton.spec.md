@@ -35,7 +35,7 @@ Build a reusable `PillBloomButton` in React and TypeScript with a transparent pi
 
 - Use a black dotted backdrop outside the component, with a separate state message and reset control.
 - Reset restores the chromatic state. The reusable button owns its activation state; the demo owns its reset control.
-- Mark the main demo button with `data-wave-trigger` so the gallery can send an ambient dot wave from its center on pointer or keyboard activation. Keep this integration outside the reusable button; speed/reset controls do not trigger waves.
+- Keep the backdrop static in this standalone demo. Clicking changes only the pill button; dedicated wave demos own and clip their wave fields separately.
 - Add accessible Slow, 18s, Medium, and Fast speed controls in the demo, displaying each duration and selection with `aria-pressed`. Switching speed preserves the green/chromatic state; resetting preserves the selected speed.
 - Add keyboard-accessible Perimeter sweep / All at once controls with `aria-pressed`. Choosing a transition restores the chromatic preview for the next activation, while preserving speed. Reduced motion makes both transitions immediate.
 - Verify that the green moves evenly across straight edges and rounded ends, the completed green state visibly keeps orbiting, and the geometry fits at 390 px and 320 px viewport widths.

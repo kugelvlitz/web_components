@@ -11,7 +11,7 @@ export function PillBloomButtonDemo() {
     <div className="flex min-h-[480px] flex-col items-center justify-center gap-16 px-6 py-16 text-center sm:min-h-[520px]">
       <p className="font-mono text-[10px] tracking-[0.25em] text-neutral-600 uppercase">A softer kind of orbit</p>
 
-      <PillBloomButton data-wave-trigger key={reset} speed={speed} greenTransition={greenTransition} onClick={() => setActivated(true)}>
+      <PillBloomButton key={reset} speed={speed} greenTransition={greenTransition} onClick={() => setActivated(true)}>
         Give it a spin
       </PillBloomButton>
 

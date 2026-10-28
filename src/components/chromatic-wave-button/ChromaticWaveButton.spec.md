@@ -32,7 +32,7 @@ Build a reusable React and TypeScript scene called `ChromaticWaveButton`, compos
 - Apply `className` to the scene container and `buttonClassName` to the button. Native button styles and attributes apply to the button.
 - Call the consumer's click handler first. Respect `preventDefault()` by skipping both the wave and the internal green takeover.
 - Use the button's current bounding rectangle to pass its viewport center and outline dimensions to the wave field. The center locates the capsule; the actual emission boundary is its perimeter. Keep this correct after scrolling and resizing.
-- Keep this scene's wave field independent of the playground-wide white dot field. Its clicks and controls must not trigger a second ambient wave.
+- Keep the canvas and wave pixels confined to the stage with clipped overflow. The page backdrop is static; clicks and controls must not emit waves outside this demo.
 
 ## Accessibility and responsiveness
 
@@ -49,5 +49,5 @@ Build a reusable React and TypeScript scene called `ChromaticWaveButton`, compos
 - Include labeled wave controls below the stage: strength from 4–20 px (default 12), speed from 200–800 px/second in 20 px/second steps (default 480), and decay from 1–5 seconds in 0.5-second steps (default 3). Apply changes to the composed wave field.
 - Orbit and wave controls preserve button activation and do not emit waves. Reset clears waves and restores the chromatic button while preserving all selected settings.
 - Add accessible Perimeter sweep / All at once transition controls. Mode changes restore the chromatic preview and clear waves while preserving orbit speed and wave settings. Reset preserves the selected transition too.
-- Verify visible emission around all sides of the pill immediately after clicking, an undisturbed interior, red around the moving crest, yellow ahead, blue behind, the yellow-to-red-to-blue sequence at a fixed dot, both green transition modes, working wave controls, overlapping waves, return to a white idle grid, keyboard input, reduced motion, mobile layout, and no ambient-wave leakage.
+- Verify visible emission around all sides of the pill immediately after clicking, an undisturbed interior, red around the moving crest, yellow ahead, blue behind, the yellow-to-red-to-blue sequence at a fixed dot, both green transition modes, working wave controls, overlapping waves, return to a white idle grid, keyboard input, reduced motion, mobile layout, and confinement to the demo stage.
 - Deliver the scene component, its demo, this spec, and documentation for the shared component/style dependencies. No additional runtime libraries are required.

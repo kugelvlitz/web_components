@@ -21,6 +21,7 @@ Build a reusable `DotWaveBackground` with React, TypeScript, and Canvas 2D. It r
 - Each trigger creates an expanding circular wave packet with a sinusoidal displacement and a Gaussian envelope, with a brief 100 ms fade-in.
 - Sum overlapping wave contributions. Keep up to eight recent waves, bound displacement, and remove each wave once its trailing envelope has passed the farthest canvas corner.
 - Use an imperative Canvas rendering loop so animation does not cause React renders on every frame. Draw once when idle and stop requesting frames after all waves expire.
+- Accept optional `onFrame(frame)` to share the rendered field with effects such as WaveDistortion. Publish CSS-pixel width/height, spacing, strength, and active waves with x/y, radius, fade, optional outline dimensions, and optional per-wave `colorBands`. Publish an empty wave list on the final idle draw so consumers can remove their effects. Share capsule geometry and the traveling-band color sampler (`waveGeometry.ts` and `waveColors.ts`) with companion effects so they match the dots, and read the latest callback without restarting the wave field.
 - Resize with the parent and adapt to device pixel ratio, capped at 2. Keep trigger coordinates in CSS pixels.
 - Pause frame requests while the document is hidden and discard expired waves when rendering resumes. Clean up observers, media listeners, visibility listeners, resize listeners, and animation frames on unmount.
 
@@ -37,8 +38,8 @@ Build a reusable `DotWaveBackground` with React, TypeScript, and Canvas 2D. It r
 - Keep the original Dot waves demo white. Demonstrate chromatic mode separately by composing the background with a centered White Bloom button in the Chromatic waves demo.
 - Add labeled range controls for strength (4–20 px), speed (200–800 px/second), and decay (1–5 seconds). Changes affect this demo's wave field.
 - Keep all controls, the backdrop color, and explanatory text outside the reusable background component.
-- In the playground, mount a separate viewport-fixed instance behind the gallery. A delegated click handler on the preview triggers it from the center of buttons marked `data-wave-trigger`.
-- Main demo actions trigger the ambient wave; speed selectors, reset controls, gallery navigation, and sliders do not. Existing button components need no dependency on this background.
+- Mount canvases only inside explicit Dot waves, Chromatic waves, and Wave distortion demo stages. Clip effects within their preview boundaries. The playground-wide dotted backdrop remains a static CSS background.
+- Each wave demo wires its own trigger directly to its own ref. Ordinary component buttons, gallery navigation, speed selectors, and sliders do not trigger any background waves. Switching away from a wave demo unmounts its field and cancels pending frames.
 
 ## Acceptance criteria
 

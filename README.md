@@ -1,6 +1,6 @@
 # Component Playground
 
-A local playground for reusable React components, built with TypeScript, Vite, and Tailwind CSS. Includes White Bloom, Chromatic Waves, Pill Bloom, Bloom Button, Dot Waves, Button, and Card examples.
+A local playground for reusable React components, built with TypeScript, Vite, and Tailwind CSS. Includes White Bloom, Chromatic Waves, Wave Distortion, Pill Bloom, Bloom Button, and Dot Waves examples.
 
 ## Component spec prompts
 
@@ -11,10 +11,9 @@ Each reusable component has a self-contained prompt describing its current appea
 | White Bloom Button | [WhiteBloomButton.spec.md](src/components/white-bloom-button/WhiteBloomButton.spec.md) |
 | Pill Bloom Button | [PillBloomButton.spec.md](src/components/pill-bloom-button/PillBloomButton.spec.md) |
 | Bloom Button | [BloomButton.spec.md](src/components/bloom-button/BloomButton.spec.md) |
-| Button | [Button.spec.md](src/components/button/Button.spec.md) |
-| Card | [Card.spec.md](src/components/card/Card.spec.md) |
 | Dot Wave Background | [DotWaveBackground.spec.md](src/components/dot-wave-background/DotWaveBackground.spec.md) |
 | Chromatic Wave Button | [ChromaticWaveButton.spec.md](src/components/chromatic-wave-button/ChromaticWaveButton.spec.md) |
+| Wave Distortion | [WaveDistortion.spec.md](src/components/wave-distortion/WaveDistortion.spec.md) |
 
 New components use the [spec prompt template](docs/component-spec-template.md). [AGENTS.md](AGENTS.md) records the requirement to create and maintain these prompts alongside future component work.
 
@@ -48,7 +47,7 @@ Choosing a mode restores the chromatic preview while preserving the other settin
 
 ## Dot wave background
 
-`DotWaveBackground` is an independent Canvas 2D dot grid. Main demo button clicks send waves through the playground's dots: they shift, brighten, grow, and settle back. Multiple clicks layer waves. Orbit-speed controls, reset controls, and navigation do not trigger the effect.
+`DotWaveBackground` is an independent Canvas 2D dot grid. Waves run only inside explicit **Dot waves**, **Chromatic waves**, and **Wave distortion** demo boxes. Their dots shift, brighten, grow, and settle back, and multiple clicks layer waves. The page-wide backdrop is static CSS; ordinary component buttons, orbit-speed controls, and navigation do not trigger waves.
 
 The **Dot waves** gallery entry has a separate wave field with strength, wave-speed, and decay controls. The reusable component defaults to 24 px spacing, 12 px strength, 480 px/second speed, and 3-second decay. It renders only while waves are active or the layout changes and shows a static grid under reduced motion.
 
@@ -85,7 +84,29 @@ import { ChromaticWaveButton } from './components/chromatic-wave-button/Chromati
 <ChromaticWaveButton speed="18s" waveStrength={12} waveSpeed={480} waveDecay={3} />
 ```
 
-`className` styles the stage; `buttonClassName` styles the button. Native button props and children are supported. The demo includes orbit-speed and green-transition controls plus sliders for wave strength, wave speed, and decay. Controls and Reset scene sit outside the field and do not emit waves; reset preserves their settings. This scene does not trigger the playground's ambient white waves. For other compositions, `ripple(x, y, { outline: { width, height }, colorBands: { crest, ahead, trailing } })` supports perimeter emission with traveling RGB color bands. The existing directional `colors` sampler remains available for other effects. Reuse this scene together with the Dot Wave Background, White Bloom, Pill Bloom, and Bloom Button component/style dependencies.
+`className` styles the stage; `buttonClassName` styles the button. Native button props and children are supported. The demo includes orbit-speed and green-transition controls plus sliders for wave strength, wave speed, and decay. Controls and Reset scene sit outside the field and do not emit waves; reset preserves their settings. The wave stays clipped inside its stage. For other compositions, `ripple(x, y, { outline: { width, height }, colorBands: { crest, ahead, trailing } })` supports perimeter emission with traveling RGB color bands. The existing directional `colors` sampler remains available for other effects. Reuse this scene together with the Dot Wave Background, White Bloom, Pill Bloom, and Bloom Button component/style dependencies.
+
+## Wave distortion
+
+The separate **Wave distortion** demo bends and colors real HTML text and ruled lines as the dot wave passes. The same traveling bands turn individual strokes yellow ahead of the wave, red at its crest, and blue behind it, then restore their original colors. Its central White Bloom button stays stable. Toggle **Distort text and lines** and **Color text and lines** independently to compare, adjust wave strength/speed/decay, or reset the scene.
+
+`WaveDistortion` applies local SVG displacement and color filters to its children, driven by the same field and color-band sampler as the dots. Coloring follows visible content and preserves transparency. `DotWaveBackground` supplies `onFrame` updates including each wave's optional `colorBands`; the wrapper removes its filter when the field becomes idle, both effects are disabled, or reduced motion is enabled. The effect stays within the preview stage.
+
+```tsx
+const distortion = useRef<WaveDistortionHandle>(null)
+const updateDistortion = useCallback(
+  (frame: DotWaveFrame) => distortion.current?.update(frame),
+  [],
+)
+
+// Inside a positioned, overflow-clipped stage:
+<DotWaveBackground onFrame={updateDistortion} />
+<WaveDistortion ref={distortion} style={{ position: 'absolute', inset: 0 }}>
+  <h2>Text that bends with the wave</h2>
+</WaveDistortion>
+```
+
+The wrapper accepts `enabled` for distortion and `colorEnabled` for coloring (both default true), `resolution` (144 by default), `className`, and `style`; its ref also exposes `clear()`. Reuse it with DotWaveBackground and the shared `waveGeometry.ts` and `waveColors.ts` helpers. The demo uses the existing White Bloom button and its component/style dependencies.
 
 ## White bloom button
 
@@ -159,6 +180,11 @@ Open the local URL printed by Vite. Edits update the browser automatically. If y
 ```text
 src/
   components/
+    wave-distortion/
+      WaveDistortion.tsx
+      WaveDistortion.css
+      WaveDistortion.demo.tsx
+      WaveDistortion.spec.md
     chromatic-wave-button/
       ChromaticWaveButton.tsx
       ChromaticWaveButton.demo.tsx
@@ -180,12 +206,6 @@ src/
       BloomButton.tsx
       BloomButton.css
       BloomButton.demo.tsx
-    button/
-      Button.tsx
-      Button.demo.tsx
-    card/
-      Card.tsx
-      Card.demo.tsx
   playground/
     demos.ts
     Playground.tsx

@@ -24,8 +24,7 @@
   isolation: isolate;
   min-height: 100svh;
   background-color: #050505;
-}
-
-.playground-backdrop > .dot-wave-background {
-  position: fixed;
+  background-image: radial-gradient(circle, rgb(255 255 255 / 13%) 0.8px, transparent 0.9px);
+  background-size: 24px 24px;
+  background-position: center;
 }

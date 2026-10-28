@@ -36,6 +36,6 @@ Build a reusable `BloomButton` with React and TypeScript. Use component-scoped C
 - Include a state message and a separate reset control. Use “Give it a spin” as example text.
 - Include keyboard-accessible Slow, Medium, and Fast demo controls displaying seconds per turn and the selected state via `aria-pressed`. Switching speed preserves the button's chromatic/green state; reset preserves the selected speed.
 - Keep the button reusable independently of that message, backdrop, and reset control.
-- In this playground, mark the main demo button with `data-wave-trigger`. The gallery sends an ambient dot wave from its center on pointer or keyboard activation. The reusable button remains independent of the background, and speed/reset controls do not trigger waves.
+- Keep the playground backdrop static for this demo. Clicking the button runs its own bloom animation without triggering a page-wide wave; wave integration belongs to separate demos.
 - Verify repeated activation, keyboard focus, disabled behavior, reduced motion, and a narrow viewport.
 - Deliver `BloomButton.tsx`, `BloomButton.css`, `BloomButton.demo.tsx`, and this spec. Use CSS custom-property animation and masks; no animation library or image assets are required.

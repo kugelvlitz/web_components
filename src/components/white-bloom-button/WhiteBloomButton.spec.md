@@ -46,7 +46,7 @@ Build a reusable `WhiteBloomButton` using React and TypeScript. It is a transpar
 ## Demo and acceptance
 
 - Show the component on a black dotted backdrop owned by the playground, not by the button. Include example text, an external state message, and an external reset control.
-- Mark the main demo button with `data-wave-trigger`. The gallery triggers its independent dot-wave background from the button's center on pointer or keyboard activation. Speed/reset controls do not trigger waves, and the reusable button has no background dependency.
+- Keep the backdrop static in this standalone demo. The button and its controls do not trigger background waves; dedicated wave demos compose this button with a clipped local wave field.
 - Add accessible Slow, 18s, Medium, and Fast demo controls, displaying seconds per turn and selection with `aria-pressed`. Changing speed preserves activation state; reset preserves speed.
 - Add an accessible Perimeter sweep / All at once mode control. Changing the mode restores the chromatic preview while preserving speed. Both modes complete immediately under reduced motion.
 - Confirm the initial rainbow fringes extend beyond the core, the white bloom is visible, and the completed state is unmistakably green with distinct fringe accents.

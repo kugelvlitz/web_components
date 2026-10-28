@@ -1,5 +1,9 @@
 import { useEffect, useImperativeHandle, useRef, type CSSProperties, type Ref } from 'react'
 import './DotWaveBackground.css'
+import { waveGeometry, type WaveOutline } from './waveGeometry'
+import { waveBandColor, type DotWaveColor, type WaveColorBands } from './waveColors'
+
+export type { DotWaveColor } from './waveColors'
 
 export type DotWaveBackgroundHandle = {
   /** Trigger a wave using viewport coordinates, such as a button's center. */
@@ -7,7 +11,6 @@ export type DotWaveBackgroundHandle = {
   clear: () => void
 }
 
-export type DotWaveColor = readonly [number, number, number]
 export type DotWaveColorSource = {
   /** Color-separation direction in degrees. */
   angle: number
@@ -23,7 +26,15 @@ export type DotWaveEmission = {
   /** Optional color snapshot belonging to this wave, independent of later source changes. */
   colors?: DotWaveColorSource
   /** Colors travel with the wave front rather than depending on screen direction. */
-  colorBands?: { crest: DotWaveColor; ahead: DotWaveColor; trailing: DotWaveColor }
+  colorBands?: WaveColorBands
+}
+
+export type DotWaveFrame = {
+  width: number
+  height: number
+  spacing: number
+  strength: number
+  waves: readonly { x: number; y: number; radius: number; fade: number; outline?: WaveOutline; colorBands?: WaveColorBands }[]
 }
 
 export type DotWaveBackgroundProps = {
@@ -34,6 +45,7 @@ export type DotWaveBackgroundProps = {
   decay?: number
   colorMode?: 'white' | 'chromatic'
   colorSource?: () => DotWaveColorSource | null
+  onFrame?: (frame: DotWaveFrame) => void
   className?: string
   style?: CSSProperties
 }
@@ -54,12 +66,6 @@ function spectralColor(phase: number) {
   return current.map((channel, channelIndex) => channel + (next[channelIndex] - channel) * mix)
 }
 
-function waveBandColor(position: number, bands: NonNullable<DotWaveEmission['colorBands']>): DotWaveColor {
-  const target = position >= 0 ? bands.ahead : bands.trailing
-  const mix = Math.max(0, Math.min(1, (Math.abs(position) - 0.18) / 0.42))
-  return bands.crest.map((channel, index) => Math.round(channel + (target[index] - channel) * mix)) as [number, number, number]
-}
-
 export function DotWaveBackground({
   ref,
   spacing = 24,
@@ -68,6 +74,7 @@ export function DotWaveBackground({
   decay = 3,
   colorMode = 'white',
   colorSource,
+  onFrame,
   className = '',
   style,
 }: DotWaveBackgroundProps) {
@@ -75,6 +82,9 @@ export function DotWaveBackground({
   const wavesRef = useRef<Wave[]>([])
   const reducedMotionRef = useRef(false)
   const scheduleRef = useRef<() => void>(() => {})
+  const onFrameRef = useRef(onFrame)
+
+  useEffect(() => { onFrameRef.current = onFrame }, [onFrame])
 
   useImperativeHandle(ref, () => ({
     ripple(clientX, clientY, emission) {
@@ -158,11 +168,7 @@ export function DotWaveBackground({
             const dx = x - wave.x
             const dy = y - wave.y
             const shape = wave.emission?.outline
-            const halfSegment = shape ? Math.max(0, (shape.width - shape.height) / 2) : 0
-            const normalX = shape ? dx - Math.max(-halfSegment, Math.min(halfSegment, dx)) : dx
-            const normalY = dy
-            const normalLength = Math.hypot(normalX, normalY)
-            const distance = normalLength - (shape ? shape.height / 2 : 0)
+            const { normalX, normalY, normalLength, distance } = waveGeometry(dx, dy, shape)
             // The capsule's interior stays quiet; the wave travels away from its edge.
             if (shape && distance < 0) continue
             const delta = distance - wave.radius
@@ -228,6 +234,10 @@ export function DotWaveBackground({
         }
       }
 
+      onFrameRef.current?.({
+        width, height, spacing: gap, strength: amplitude,
+        waves: waves.map(({ x, y, radius, fade, emission }) => ({ x, y, radius, fade, outline: emission?.outline, colorBands: emission?.colorBands })),
+      })
       if (waves.length && !document.hidden) frame = requestAnimationFrame(draw)
     }
 

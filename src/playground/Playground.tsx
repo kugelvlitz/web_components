@@ -1,29 +1,18 @@
-import { useRef, useState, type MouseEvent } from 'react'
-import { DotWaveBackground, type DotWaveBackgroundHandle } from '../components/dot-wave-background/DotWaveBackground'
+import { useState } from 'react'
 import { demos } from './demos'
 
 export function Playground() {
-  const backgroundRef = useRef<DotWaveBackgroundHandle>(null)
   const [selectedId, setSelectedId] = useState(demos[0].id)
   const selected = demos.find((demo) => demo.id === selectedId) ?? demos[0]
   const Demo = selected.component
 
-  function triggerBackgroundWave(event: MouseEvent<HTMLElement>) {
-    if (event.defaultPrevented || !(event.target instanceof Element)) return
-    const button = event.target.closest<HTMLButtonElement>('button[data-wave-trigger]')
-    if (!button || button.disabled) return
-    const bounds = button.getBoundingClientRect()
-    backgroundRef.current?.ripple(bounds.left + bounds.width / 2, bounds.top + bounds.height / 2)
-  }
-
   return (
     <div className="playground-backdrop">
-      <DotWaveBackground ref={backgroundRef} />
       <div className="relative mx-auto max-w-6xl px-5 py-10 sm:px-10 sm:py-16">
         <header className="mb-12 border-b border-white/10 pb-10">
           <p className="mb-4 font-mono text-xs font-medium tracking-[0.2em] text-neutral-500 uppercase">The workbench</p>
-          <h1 className="text-3xl font-medium tracking-tight sm:text-5xl">Component playground<span className="text-neutral-600">.</span></h1>
-          <p className="mt-4 max-w-xl text-base leading-7 text-neutral-500">A little space for interface ideas. Build something, try its variations, and keep what works.</p>
+          <h1 className="text-3xl font-medium tracking-tight sm:text-5xl">BloomFlow playground<span className="text-neutral-600">.</span></h1>
+          <p className="mt-4 max-w-xl text-base leading-7 text-neutral-500">Space for testing some ideas.</p>
         </header>
         <div className="grid items-start gap-8 md:grid-cols-[180px_minmax(0,1fr)] md:gap-12">
           <nav aria-label="Components">
@@ -47,7 +36,7 @@ export function Playground() {
           <main>
             <h2 className="text-2xl font-semibold tracking-tight">{selected.name}</h2>
             <p className="mt-2 max-w-xl text-sm leading-6 text-neutral-500">{selected.description}</p>
-            <section onClick={triggerBackgroundWave} aria-label={`${selected.name} preview`} className={`mt-6 rounded-2xl border ${selected.immersive ? 'border-white/10' : 'border-stone-200 bg-white p-6 text-stone-900 sm:p-8'}`}>
+            <section aria-label={`${selected.name} preview`} className={`mt-6 rounded-2xl border ${selected.immersive ? 'border-white/10' : 'border-stone-200 bg-white p-6 text-stone-900 sm:p-8'}`}>
               <Demo key={selected.id} />
             </section>
             <p className="mt-4 break-all font-mono text-[10px] text-neutral-600">{selected.source}</p>
