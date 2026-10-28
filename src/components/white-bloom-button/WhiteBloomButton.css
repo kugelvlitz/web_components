@@ -1,0 +1,53 @@
+.white-bloom-button .pill-bloom-button__layer--aura,
+.white-bloom-button .pill-bloom-button__layer--glow {
+  display: none;
+}
+
+.white-bloom-button .pill-bloom-button__fringe-channel {
+  stroke-width: 2.2px;
+  opacity: 1;
+  transform: translate(
+    calc(cos(var(--pill-angle)) * var(--pill-fringe-shift) * 1.6),
+    calc(sin(var(--pill-angle)) * var(--pill-fringe-shift) * 1.6)
+  );
+}
+
+.white-bloom-button .pill-bloom-button__palette--green {
+  /* Keep the green edge saturated above the neutral border and white bloom. */
+  --pill-color-weight: 100%;
+  --pill-color-a: #00ff4c;
+  --pill-color-b: #008d35;
+}
+
+/* Static white light around the border, independent of the animated colors. */
+.white-bloom-button::before,
+.white-bloom-button::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: calc(-1 * var(--pill-outline-width));
+  border: var(--pill-outline-width) solid white;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.white-bloom-button::before {
+  inset: calc(-1 * var(--pill-outline-width) - 1px);
+  border-width: calc(var(--pill-outline-width) + 2px);
+  opacity: 0.6;
+  filter: blur(7px);
+}
+
+.white-bloom-button::after {
+  inset: calc(-1 * var(--pill-outline-width) - 3px);
+  border-width: calc(var(--pill-outline-width) + 6px);
+  opacity: 0.3;
+  filter: blur(18px);
+}
+
+@media (forced-colors: active) {
+  .white-bloom-button::before,
+  .white-bloom-button::after {
+    display: none;
+  }
+}

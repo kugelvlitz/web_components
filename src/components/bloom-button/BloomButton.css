@@ -1,0 +1,174 @@
+@property --bloom-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: true;
+}
+
+@property --bloom-burst-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: true;
+}
+
+.bloom-button {
+  --bloom-orbit-duration: 7s;
+  --bloom-color-a: #00eaff;
+  --bloom-color-b: #6665ff;
+  --bloom-color-c: #ff398e;
+  --bloom-color-d: #ff6038;
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 36px;
+  border: 1px solid rgb(255 255 255 / 80%);
+  border-radius: 14px;
+  background: transparent;
+  color: white;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.025em;
+  transition: border-color 200ms, transform 200ms, opacity 200ms;
+}
+
+.bloom-button[data-speed='medium'] {
+  --bloom-orbit-duration: 3.5s;
+}
+
+.bloom-button[data-speed='fast'] {
+  --bloom-orbit-duration: 1.75s;
+}
+
+.bloom-button[data-bloom='green'] {
+  --bloom-color-a: #b3ffad;
+  --bloom-color-b: #24ff76;
+  --bloom-color-c: #00d957;
+  --bloom-color-d: #64ff7d;
+}
+
+.bloom-button__effects {
+  position: absolute;
+  z-index: -1;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  animation: bloom-orbit var(--bloom-orbit-duration) linear infinite;
+}
+
+.bloom-button__effects--burst {
+  animation:
+    bloom-orbit var(--bloom-orbit-duration) linear infinite,
+    bloom-burst 1100ms cubic-bezier(0.16, 0.65, 0.3, 1);
+}
+
+.bloom-button__layer {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+}
+
+.bloom-button__ring {
+  position: absolute;
+  inset: 0;
+  padding: var(--bloom-ring-width, 2px);
+  border-radius: inherit;
+  background: conic-gradient(
+    from calc(var(--bloom-angle) + var(--bloom-burst-angle)),
+    transparent 0deg 30deg,
+    var(--bloom-color-a) 65deg,
+    var(--bloom-color-b) 110deg,
+    transparent 155deg 210deg,
+    var(--bloom-color-c) 250deg,
+    var(--bloom-color-d) 285deg,
+    transparent 330deg 360deg
+  );
+  /* Cut out the center, so the backdrop shows through the button. */
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.bloom-button__layer--aura {
+  --bloom-ring-width: 8px;
+  inset: -5px;
+  opacity: 0.55;
+  filter: blur(19px);
+}
+
+.bloom-button__layer--glow {
+  --bloom-ring-width: 4px;
+  inset: -2px;
+  opacity: 0.95;
+  filter: blur(7px);
+}
+
+.bloom-button__layer--edge {
+  opacity: 0.8;
+}
+
+.bloom-button__label {
+  position: relative;
+}
+
+.bloom-button:hover:not(:disabled) {
+  border-color: white;
+  transform: translateY(-1px);
+}
+
+.bloom-button:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+.bloom-button:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 8px;
+}
+
+.bloom-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.bloom-button:disabled .bloom-button__effects {
+  animation-play-state: paused;
+}
+
+@keyframes bloom-orbit {
+  to { --bloom-angle: 360deg; }
+}
+
+@keyframes bloom-burst {
+  to { --bloom-burst-angle: 360deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bloom-button {
+    transition: none;
+  }
+
+  .bloom-button__effects {
+    --bloom-angle: 45deg;
+    animation: none;
+  }
+
+  .bloom-button:hover:not(:disabled),
+  .bloom-button:active:not(:disabled) {
+    transform: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .bloom-button {
+    border-color: ButtonText;
+    color: ButtonText;
+  }
+
+  .bloom-button__effects {
+    display: none;
+  }
+}

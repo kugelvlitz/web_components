@@ -1,0 +1,197 @@
+@property --pill-distance {
+  syntax: '<number>';
+  initial-value: 0;
+  inherits: true;
+}
+
+@property --pill-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: true;
+}
+
+@property --pill-green-mix {
+  syntax: '<number>';
+  initial-value: 0;
+  inherits: true;
+}
+
+.pill-bloom-button {
+  --pill-orbit-duration: 24s;
+  width: 272px;
+  max-width: 100%;
+  min-height: 86px;
+  padding: 24px 36px;
+  border: var(--pill-outline-width, 2px) solid rgb(255 255 255 / 55%);
+  border-radius: 9999px;
+  font-size: 18px;
+}
+
+.pill-bloom-button[data-speed='18s'] {
+  --pill-orbit-duration: 18s;
+}
+
+.pill-bloom-button[data-speed='medium'] {
+  --pill-orbit-duration: 12s;
+}
+
+.pill-bloom-button[data-speed='fast'] {
+  --pill-orbit-duration: 6s;
+}
+
+.pill-bloom-button .pill-bloom-button__effects {
+  inset: calc(-1 * var(--pill-outline-width, 2px));
+  animation: none;
+}
+
+.pill-bloom-button .pill-bloom-button__effects--active {
+  animation: pill-green-takeover 2200ms linear forwards;
+}
+
+.pill-bloom-button[data-green-transition='uniform'] .pill-bloom-button__effects--active {
+  animation: pill-green-crossfade 900ms ease-in-out forwards;
+}
+
+.pill-bloom-button[data-green-transition='uniform'] .pill-bloom-button__color-layer,
+.pill-bloom-button[data-green-transition='uniform'] .pill-bloom-button__fringes {
+  mask: none;
+}
+
+.pill-bloom-button[data-green-transition='uniform'] .pill-bloom-button__color-layer--spectrum,
+.pill-bloom-button[data-green-transition='uniform'] .pill-bloom-button__fringes--spectrum {
+  opacity: calc(1 - var(--pill-green-mix));
+}
+
+.pill-bloom-button[data-green-transition='uniform'] .pill-bloom-button__color-layer--green,
+.pill-bloom-button[data-green-transition='uniform'] .pill-bloom-button__fringes--green {
+  opacity: var(--pill-green-mix);
+}
+
+.pill-bloom-button__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.pill-bloom-button__trail {
+  stroke-dasharray: var(--pill-distance) 1000;
+}
+
+.pill-bloom-button__palette {
+  width: 100%;
+  height: 100%;
+}
+
+.pill-bloom-button__palette--spectrum {
+  --pill-color-a: #ff1900;
+  --pill-color-b: #ffeb00;
+  --pill-color-c: #79ff00;
+  --pill-color-d: #00dfff;
+  --pill-color-e: #344bff;
+  --pill-color-f: #bd29ff;
+}
+
+.pill-bloom-button__palette--green {
+  --pill-color-a: #00ff4c;
+  --pill-color-b: #008526;
+}
+
+.pill-bloom-button__orbit {
+  width: 100%;
+  height: 100%;
+  animation: pill-slow-orbit var(--pill-orbit-duration) linear infinite;
+  /* Desaturate only the edge; the separate bloom keeps its rich colors. */
+  background: conic-gradient(
+    from var(--pill-angle),
+    color-mix(in srgb, var(--pill-color-a) var(--pill-warm-weight, var(--pill-color-weight, 100%)), white) 0deg 56deg,
+    color-mix(in srgb, var(--pill-color-b) var(--pill-warm-weight, var(--pill-color-weight, 100%)), white) 68deg 124deg,
+    color-mix(in srgb, var(--pill-color-c) var(--pill-color-weight, 100%), white) 136deg 172deg,
+    color-mix(in srgb, var(--pill-color-d) var(--pill-color-weight, 100%), white) 184deg 220deg,
+    color-mix(in srgb, var(--pill-color-e) var(--pill-color-weight, 100%), white) 232deg 280deg,
+    color-mix(in srgb, var(--pill-color-f) var(--pill-color-weight, 100%), white) 292deg 336deg,
+    color-mix(in srgb, var(--pill-color-a) var(--pill-warm-weight, var(--pill-color-weight, 100%)), white) 348deg 360deg
+  );
+}
+
+.pill-bloom-button__palette--green .pill-bloom-button__orbit {
+  /* The saturated bloom and pale edge share one peak at the seamless loop. */
+  background: conic-gradient(
+    from var(--pill-angle),
+    color-mix(in srgb, var(--pill-color-a) var(--pill-color-weight, 100%), white) 0deg 35deg,
+    color-mix(in srgb, var(--pill-color-b) var(--pill-color-weight, 100%), white) 150deg 210deg,
+    color-mix(in srgb, var(--pill-color-a) var(--pill-color-weight, 100%), white) 325deg 360deg
+  );
+}
+
+.pill-bloom-button__fringe-orbit {
+  animation: pill-slow-orbit var(--pill-orbit-duration) linear infinite;
+}
+
+.pill-bloom-button__fringe-channel {
+  /* Split copies of the same edge into closely spaced color channels. */
+  transform: translate(
+    calc(cos(var(--pill-angle)) * var(--pill-fringe-shift)),
+    calc(sin(var(--pill-angle)) * var(--pill-fringe-shift))
+  );
+  mix-blend-mode: screen;
+  opacity: 0.75;
+}
+
+.pill-bloom-button__layer--edge {
+  --pill-color-weight: 22%;
+  --pill-warm-weight: 42%;
+  opacity: 0.65;
+}
+
+.pill-bloom-button .pill-bloom-button__fringes--spectrum .pill-bloom-button__fringe-channel:nth-child(-n+2) {
+  stroke-width: calc(var(--pill-outline-width, 2px) * 0.3 + 1.6px);
+  opacity: 1;
+}
+
+.pill-bloom-button__layer--glow {
+  opacity: 1;
+  filter: blur(10px);
+}
+
+.pill-bloom-button__layer--aura {
+  opacity: 0.85;
+  filter: blur(24px);
+}
+
+.pill-bloom-button:disabled .pill-bloom-button__orbit,
+.pill-bloom-button:disabled .pill-bloom-button__fringe-orbit {
+  animation-play-state: paused;
+}
+
+@keyframes pill-slow-orbit {
+  to { --pill-angle: 360deg; }
+}
+
+@keyframes pill-green-takeover {
+  from { --pill-distance: 0; }
+  to { --pill-distance: 1000; }
+}
+
+@keyframes pill-green-crossfade {
+  from { --pill-green-mix: 0; }
+  to { --pill-green-mix: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill-bloom-button .pill-bloom-button__effects--active {
+    --pill-distance: 1000;
+    animation: none;
+  }
+
+  .pill-bloom-button[data-green-transition='uniform'] .pill-bloom-button__effects--active {
+    --pill-green-mix: 1;
+    animation: none;
+  }
+
+  .pill-bloom-button__orbit,
+  .pill-bloom-button__fringe-orbit {
+    --pill-angle: 45deg;
+    animation: none;
+  }
+}
